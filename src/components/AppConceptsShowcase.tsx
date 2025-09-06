@@ -109,7 +109,7 @@ export function AppConceptsShowcase({ onSubmitIdeaClick }: AppConceptsShowcasePr
   const handleSubmitClick = () => {
     // Scroll to top of page
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    
+
     // Call the callback to open the form
     if (onSubmitIdeaClick) {
       setTimeout(() => {
@@ -272,7 +272,7 @@ export function AppConceptsShowcase({ onSubmitIdeaClick }: AppConceptsShowcasePr
               fontSize="md"
               fontWeight="bold"
               cursor="pointer"
-              _hover={{ 
+              _hover={{
                 transform: "scale(1.05)",
                 shadow: "lg"
               }}

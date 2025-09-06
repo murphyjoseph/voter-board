@@ -42,12 +42,12 @@ export function IdeasSection({ ideas, boardId, autoOpenForm, onFormToggle }: Ide
       if (onFormToggle) {
         onFormToggle(true);
       }
-      
+
       // Scroll to form after a brief delay
       setTimeout(() => {
         if (formRef.current) {
-          formRef.current.scrollIntoView({ 
-            behavior: 'smooth', 
+          formRef.current.scrollIntoView({
+            behavior: 'smooth',
             block: 'start',
             inline: 'nearest'
           });

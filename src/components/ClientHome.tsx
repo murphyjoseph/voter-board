@@ -62,9 +62,9 @@ export function ClientHome({ ideas, boards }: ClientHomeProps) {
         </Box>
 
         {/* Ideas Section */}
-        <IdeasSection 
-          ideas={ideas} 
-          boardId={boards?.[0]?.id} 
+        <IdeasSection
+          ideas={ideas}
+          boardId={boards?.[0]?.id}
           autoOpenForm={autoOpenForm}
           onFormToggle={handleFormToggle}
         />

@@ -4,7 +4,10 @@ import {
   Button,
   HStack
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { generateFingerprint } from "@/utils/fingerprint";
+import { submitVote, getUserVoteForIdea } from "@/app/actions";
 
 interface VotingActionsProps {
   ideaId: string;
@@ -14,25 +17,61 @@ interface VotingActionsProps {
 
 export function VotingActions({ ideaId, currentVoteCount, onVoteChange }: VotingActionsProps) {
   const [isVoting, setIsVoting] = useState(false);
+  const [userVote, setUserVote] = useState<'up' | 'down' | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+
+  // Load user's existing vote on component mount
+  useEffect(() => {
+    const loadUserVote = async () => {
+      try {
+        const fingerprint = generateFingerprint();
+        const result = await getUserVoteForIdea(ideaId, fingerprint);
+
+        if (result.success) {
+          const voteData = result.data;
+          setUserVote(voteData === 'up' || voteData === 'down' ? voteData : null);
+        }
+      } catch (error) {
+        console.error('Error loading user vote:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserVote();
+  }, [ideaId]);
 
   const handleVote = async (voteType: 'up' | 'down') => {
+    console.log(`Attempting to vote ${voteType} on idea ${ideaId}`);
     setIsVoting(true);
     try {
-      // TODO: Implement actual voting logic with Supabase
-      const newCount = voteType === 'up'
-        ? currentVoteCount + 1
-        : Math.max(0, currentVoteCount - 1);
+      const fingerprint = generateFingerprint();
+      console.log('Using fingerprint:', fingerprint);
+      
+      const result = await submitVote(ideaId, voteType, fingerprint);
+      console.log('Vote result:', result);
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      if (onVoteChange) {
-        onVoteChange(newCount);
+      if (result.success && 'data' in result) {
+        console.log('Vote successful, updating UI:', {
+          newVoteCount: result.data.newVoteCount,
+          userVote: result.data.userVote
+        });
+        setUserVote(result.data.userVote);
+        if (onVoteChange) {
+          onVoteChange(result.data.newVoteCount);
+        }
+        // Force a page refresh to ensure UI is updated
+        router.refresh();
+        console.log(`Vote ${voteType} successful for idea ${ideaId}`);
+      } else {
+        const errorMsg = 'error' in result ? result.error : 'Unknown error';
+        console.error('Error voting:', errorMsg);
+        alert(`Voting error: ${errorMsg}`); // Temporary error display
       }
-
-      console.log(`Vote ${voteType} successful for idea ${ideaId}`);
     } catch (error) {
       console.error('Error voting:', error);
+      alert(`Network error: ${error}`); // Temporary error display
     } finally {
       setIsVoting(false);
     }
@@ -42,21 +81,21 @@ export function VotingActions({ ideaId, currentVoteCount, onVoteChange }: Voting
     <HStack gap={2}>
       <Button
         size="sm"
-        variant="outline"
+        variant={userVote === 'up' ? "solid" : "outline"}
         colorScheme="green"
         onClick={() => handleVote('up')}
-        disabled={isVoting}
+        disabled={isVoting || isLoading}
       >
-        👍 Upvote
+        👍 {userVote === 'up' ? 'Upvoted' : 'Upvote'}
       </Button>
       <Button
         size="sm"
-        variant="outline"
+        variant={userVote === 'down' ? "solid" : "outline"}
         colorScheme="red"
         onClick={() => handleVote('down')}
-        disabled={isVoting}
+        disabled={isVoting || isLoading}
       >
-        👎 Downvote
+        👎 {userVote === 'down' ? 'Downvoted' : 'Downvote'}
       </Button>
     </HStack>
   );
