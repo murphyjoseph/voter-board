@@ -2,21 +2,13 @@ import {
   Box,
   Heading,
   Text,
-  Button,
   VStack,
-  HStack,
   Container,
-  Card,
   SimpleGrid,
-  Flex
 } from "@chakra-ui/react";
-import { VoterCard } from "@/components/VoterCard";
-import { IdeaCard } from "@/components/IdeaCard";
-import { NewIdeaForm } from "@/components/NewIdeaForm";
 import { IdeasSection } from "@/components/IdeasSection";
 import { DebugInfo } from "@/components/DebugInfo";
 import { createClient } from '@/utils/supabase/server'
-import { cookies } from 'next/headers'
 
 export default async function Home() {
 
@@ -26,7 +18,7 @@ export default async function Home() {
   const { data: ideas } = await (await supabase).from('ideas').select('*')
 
   return (
-    <Container maxW="container.xl" py={8}>
+    <Container maxW="container.xl" p={16}>
       <VStack gap={8} align="stretch">
         <Box textAlign="center">
           <Heading size="2xl" mb={4}>

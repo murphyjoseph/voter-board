@@ -55,9 +55,9 @@ export function IdeasSection({ ideas, boardId }: IdeasSectionProps) {
 
       <VStack gap={4} align="stretch">
         {showForm && (
-          <NewIdeaForm 
+          <NewIdeaForm
             boardId={boardId}
-            onSubmit={handleNewIdea} 
+            onSubmit={handleNewIdea}
             onSuccess={handleSubmitSuccess}
           />
         )}

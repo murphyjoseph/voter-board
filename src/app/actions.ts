@@ -9,17 +9,17 @@ export async function submitIdea(content: string, authorFingerprint: string, boa
   try {
     // If no boardId provided, get or create a default board
     let finalBoardId = boardId;
-    
+
     if (!finalBoardId) {
       const { data: boards, error: boardError } = await supabase
         .from('boards')
         .select('id')
         .limit(1);
-        
+
       if (boardError) {
         return { success: false, error: 'Error accessing boards: ' + boardError.message };
       }
-      
+
       if (!boards || boards.length === 0) {
         // Create a default board
         const { data: newBoard, error: createError } = await supabase
@@ -32,11 +32,11 @@ export async function submitIdea(content: string, authorFingerprint: string, boa
           ])
           .select('id')
           .single();
-          
+
         if (createError || !newBoard) {
           return { success: false, error: 'Failed to create default board: ' + (createError?.message || 'Unknown error') };
         }
-        
+
         finalBoardId = newBoard.id;
       } else {
         finalBoardId = boards[0].id;
@@ -62,7 +62,7 @@ export async function submitIdea(content: string, authorFingerprint: string, boa
 
     // Revalidate the page to show the new idea
     revalidatePath('/')
-    
+
     return { success: true, data: data[0] }
   } catch (error) {
     console.error('Unexpected error:', error)
@@ -92,7 +92,7 @@ export async function updateIdea(ideaId: string, content: string, authorFingerpr
     // Update the idea
     const { data, error } = await supabase
       .from('ideas')
-      .update({ 
+      .update({
         content: content.trim(),
         updated_at: new Date().toISOString()
       })
@@ -106,7 +106,7 @@ export async function updateIdea(ideaId: string, content: string, authorFingerpr
 
     // Revalidate the page to show the updated idea
     revalidatePath('/')
-    
+
     return { success: true, data: data[0] }
   } catch (error) {
     console.error('Unexpected error:', error)

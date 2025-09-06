@@ -30,13 +30,13 @@ export function NewIdeaForm({ boardId, onSubmit, onSuccess }: NewIdeaFormProps) 
 
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       const fingerprint = generateFingerprint();
-      
+
       // Use server action to submit to database
       const result = await submitIdea(content, fingerprint, boardId);
-      
+
       if (result.success) {
         setContent('');
         if (onSuccess) {
@@ -46,7 +46,7 @@ export function NewIdeaForm({ boardId, onSubmit, onSuccess }: NewIdeaFormProps) 
       } else {
         setError(result.error || 'Failed to submit idea');
       }
-      
+
       // Also call the original onSubmit prop if provided
       if (onSubmit) {
         onSubmit(content, fingerprint);

@@ -31,11 +31,11 @@ export function EditIdeaForm({ ideaId, currentContent, onSave, onCancel }: EditI
 
     setIsSaving(true);
     setError(null);
-    
+
     try {
       const fingerprint = generateFingerprint();
       const result = await updateIdea(ideaId, content, fingerprint);
-      
+
       if (result.success) {
         if (onSave) {
           onSave(content);

@@ -23,7 +23,7 @@ export function DebugInfo({ boards, ideas }: DebugInfoProps) {
       <VStack align="start" gap={2}>
         <Text fontWeight="bold">Debug Info:</Text>
         <Text>
-          Boards: {boards?.length || 0} 
+          Boards: {boards?.length || 0}
           {boards?.[0] && (
             <Badge ml={2} colorScheme="blue">
               Default: {boards[0].id.substring(0, 8)}...
