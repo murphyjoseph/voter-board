@@ -26,14 +26,17 @@ interface Idea {
 
 interface IdeasSectionProps {
   ideas: Idea[] | null;
+  boardId?: string;
 }
 
-export function IdeasSection({ ideas }: IdeasSectionProps) {
+export function IdeasSection({ ideas, boardId }: IdeasSectionProps) {
   const [showForm, setShowForm] = useState(false);
 
-  const handleNewIdea = (content: string) => {
-    console.log('New idea submitted:', content);
-    // TODO: Implement actual submission to Supabase
+  const handleNewIdea = (content: string, fingerprint: string) => {
+    console.log('New idea submitted:', content, 'by fingerprint:', fingerprint);
+  };
+
+  const handleSubmitSuccess = () => {
     setShowForm(false);
   };
 
@@ -52,7 +55,11 @@ export function IdeasSection({ ideas }: IdeasSectionProps) {
 
       <VStack gap={4} align="stretch">
         {showForm && (
-          <NewIdeaForm onSubmit={handleNewIdea} />
+          <NewIdeaForm 
+            boardId={boardId}
+            onSubmit={handleNewIdea} 
+            onSuccess={handleSubmitSuccess}
+          />
         )}
 
         {ideas && ideas.length > 0 ? (

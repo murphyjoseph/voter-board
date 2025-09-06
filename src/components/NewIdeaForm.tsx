@@ -11,29 +11,49 @@ import {
   Text
 } from "@chakra-ui/react";
 import { useState } from "react";
+import { generateFingerprint } from "@/utils/fingerprint";
+import { submitIdea } from "@/app/actions";
 
 interface NewIdeaFormProps {
   boardId?: string;
-  onSubmit?: (content: string) => void;
+  onSubmit?: (content: string, fingerprint: string) => void;
+  onSuccess?: () => void;
 }
 
-export function NewIdeaForm({ boardId, onSubmit }: NewIdeaFormProps) {
+export function NewIdeaForm({ boardId, onSubmit, onSuccess }: NewIdeaFormProps) {
   const [content, setContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async () => {
     if (!content.trim()) return;
 
     setIsSubmitting(true);
+    setError(null);
+    
     try {
-      // For now, just call the onSubmit prop
-      // Later you can add actual Supabase submission logic
-      if (onSubmit) {
-        onSubmit(content);
+      const fingerprint = generateFingerprint();
+      
+      // Use server action to submit to database
+      const result = await submitIdea(content, fingerprint, boardId);
+      
+      if (result.success) {
+        setContent('');
+        if (onSuccess) {
+          onSuccess();
+        }
+        console.log('Idea submitted successfully:', result.data);
+      } else {
+        setError(result.error || 'Failed to submit idea');
       }
-      setContent('');
+      
+      // Also call the original onSubmit prop if provided
+      if (onSubmit) {
+        onSubmit(content, fingerprint);
+      }
     } catch (error) {
       console.error('Error submitting idea:', error);
+      setError('Failed to submit idea. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -44,6 +64,12 @@ export function NewIdeaForm({ boardId, onSubmit }: NewIdeaFormProps) {
       <Card.Body>
         <VStack gap={4} align="stretch">
           <Heading size="md">Submit a New Idea</Heading>
+
+          {error && (
+            <Box p={3} bg="red.50" borderColor="red.200" borderWidth="1px" borderRadius="md">
+              <Text color="red.600" fontSize="sm">{error}</Text>
+            </Box>
+          )}
 
           <Textarea
             placeholder="Share your idea..."
