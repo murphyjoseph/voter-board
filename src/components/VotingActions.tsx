@@ -2,7 +2,7 @@
 
 import {
   Button,
-  HStack
+  VStack
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -48,7 +48,7 @@ export function VotingActions({ ideaId, currentVoteCount, onVoteChange }: Voting
     try {
       const fingerprint = generateFingerprint();
       console.log('Using fingerprint:', fingerprint);
-      
+
       const result = await submitVote(ideaId, voteType, fingerprint);
       console.log('Vote result:', result);
 
@@ -78,7 +78,7 @@ export function VotingActions({ ideaId, currentVoteCount, onVoteChange }: Voting
   };
 
   return (
-    <HStack gap={2}>
+    <VStack gap={2}>
       <Button
         size="sm"
         variant={userVote === 'up' ? "solid" : "outline"}
@@ -86,7 +86,7 @@ export function VotingActions({ ideaId, currentVoteCount, onVoteChange }: Voting
         onClick={() => handleVote('up')}
         disabled={isVoting || isLoading}
       >
-        👍 {userVote === 'up' ? 'Upvoted' : 'Upvote'}
+        ⬆️
       </Button>
       <Button
         size="sm"
@@ -95,8 +95,8 @@ export function VotingActions({ ideaId, currentVoteCount, onVoteChange }: Voting
         onClick={() => handleVote('down')}
         disabled={isVoting || isLoading}
       >
-        👎 {userVote === 'down' ? 'Downvoted' : 'Downvote'}
+        ⬇️
       </Button>
-    </HStack>
+    </VStack>
   );
 }

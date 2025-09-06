@@ -160,7 +160,7 @@ export async function ensureDefaultBoard() {
 
 export async function submitVote(ideaId: string, voteType: 'up' | 'down', voterFingerprint: string) {
   console.log(`[Server] submitVote called with:`, { ideaId, voteType, voterFingerprint: voterFingerprint.substring(0, 8) + '...' });
-  
+
   const supabase = await createClient()
 
   try {
