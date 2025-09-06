@@ -2,9 +2,27 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  // Check if the user is authenticated via cookie
-  const authCookie = request.cookies.get('voter_board_auth')
   const { pathname } = request.nextUrl
+
+  // Check if maintenance mode is enabled
+  const maintenanceMode = process.env.MAINTENANCE_MODE === 'true'
+
+  if (maintenanceMode) {
+    // Allow access to the maintenance page itself and static assets
+    if (pathname === '/maintenance' ||
+        pathname.startsWith('/_next/') ||
+        pathname.startsWith('/favicon.ico') ||
+        pathname.match(/\.(svg|png|jpg|jpeg|gif|webp)$/)) {
+      return NextResponse.next()
+    }
+
+    // Redirect all other requests to maintenance page
+    const maintenanceUrl = new URL('/maintenance', request.url)
+    return NextResponse.redirect(maintenanceUrl)
+  }
+
+  // Normal authentication logic when not in maintenance mode
+  const authCookie = request.cookies.get('voter_board_auth')
 
   // Allow access to the login page and API routes
   if (pathname === '/login' || pathname.startsWith('/api/')) {
