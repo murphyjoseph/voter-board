@@ -50,7 +50,7 @@ export function ClientHome({ ideas, boards }: ClientHomeProps) {
   };
 
   return (
-    <Container maxW="container.xl" p={16} margin="0 auto">
+    <Container maxW="container.xl" p={{ base: 4, lg: 16 }} margin="0 auto">
       <VStack gap={8} align="stretch">
         <Box textAlign="center">
           <Heading size="2xl" mb={4}>

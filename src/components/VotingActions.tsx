@@ -43,79 +43,39 @@ export function VotingActions({ ideaId, currentVoteCount, onVoteChange }: Voting
   }, [ideaId]);
 
   const handleVote = async (voteType: 'up' | 'down') => {
-    console.log(`[Client] === VOTING DEBUG START ===`);
-    console.log(`[Client] Attempting to vote ${voteType} on idea ${ideaId}`);
-    console.log(`[Client] Current state:`, { 
-      isVoting, 
-      isLoading, 
-      userVote, 
-      currentVoteCount 
-    });
-    
-    if (isVoting) {
-      console.log(`[Client] Already voting, skipping...`);
-      return;
-    }
-    
-    if (isLoading) {
-      console.log(`[Client] Still loading, skipping...`);
-      return;
-    }
-    
+    console.log(`Attempting to vote ${voteType} on idea ${ideaId}`);
     setIsVoting(true);
-    console.log(`[Client] Set isVoting to true`);
-    
     try {
       const fingerprint = generateFingerprint();
-      console.log(`[Client] Using fingerprint: ${fingerprint.substring(0, 8)}...`);
+      console.log('Using fingerprint:', fingerprint);
 
-      console.log(`[Client] Calling submitVote server action...`);
       const result = await submitVote(ideaId, voteType, fingerprint);
-      console.log(`[Client] Vote result:`, result);
+      console.log('Vote result:', result);
 
       if (result.success && 'data' in result) {
-        console.log(`[Client] Vote successful, updating UI:`, {
+        console.log('Vote successful, updating UI:', {
           newVoteCount: result.data.newVoteCount,
-          userVote: result.data.userVote,
-          previousUserVote: userVote
+          userVote: result.data.userVote
         });
-        
-        // Update local state
         setUserVote(result.data.userVote);
-        
-        // Update parent component vote count
         if (onVoteChange) {
-          console.log(`[Client] Calling onVoteChange with new count: ${result.data.newVoteCount}`);
           onVoteChange(result.data.newVoteCount);
         }
-        
         // Force a page refresh to ensure UI is updated
-        console.log(`[Client] Refreshing page...`);
         router.refresh();
-        
-        console.log(`[Client] Vote ${voteType} completed successfully for idea ${ideaId}`);
+        console.log(`Vote ${voteType} successful for idea ${ideaId}`);
       } else {
         const errorMsg = 'error' in result ? result.error : 'Unknown error';
-        console.error(`[Client] Voting failed:`, errorMsg);
-        alert(`Voting error: ${errorMsg}`);
+        console.error('Error voting:', errorMsg);
+        alert(`Voting error: ${errorMsg}`); // Temporary error display
       }
     } catch (error) {
-      console.error(`[Client] Network error during voting:`, error);
-      alert(`Network error: ${error}`);
+      console.error('Error voting:', error);
+      alert(`Network error: ${error}`); // Temporary error display
     } finally {
-      console.log(`[Client] === VOTING DEBUG END ===`);
-      console.log(`[Client] Setting isVoting to false`);
       setIsVoting(false);
     }
   };
-
-  console.log(`[VotingActions] Rendering with:`, {
-    ideaId,
-    currentVoteCount,
-    userVote,
-    isVoting,
-    isLoading
-  });
 
   return (
     <HStack gap={2}>
@@ -123,27 +83,19 @@ export function VotingActions({ ideaId, currentVoteCount, onVoteChange }: Voting
         size="sm"
         variant={userVote === 'up' ? "solid" : "outline"}
         colorScheme="green"
-        onClick={() => {
-          console.log(`[Client] Upvote button clicked for idea ${ideaId}`);
-          handleVote('up');
-        }}
+        onClick={() => handleVote('up')}
         disabled={isVoting || isLoading}
-        data-testid="upvote-button"
       >
-        ⬆️ {userVote === 'up' ? 'Upvoted' : 'Upvote'}
+        ⬆️
       </Button>
       <Button
         size="sm"
         variant={userVote === 'down' ? "solid" : "outline"}
         colorScheme="red"
-        onClick={() => {
-          console.log(`[Client] Downvote button clicked for idea ${ideaId}`);
-          handleVote('down');
-        }}
+        onClick={() => handleVote('down')}
         disabled={isVoting || isLoading}
-        data-testid="downvote-button"
       >
-        ⬇️ {userVote === 'down' ? 'Downvoted' : 'Downvote'}
+        ⬇️
       </Button>
     </HStack>
   );
