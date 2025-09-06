@@ -76,7 +76,7 @@ export function IdeaCard({ idea }: IdeaCardProps) {
           onCancel={() => setIsEditing(false)}
         />
       ) : (
-        <Card.Root>
+        <Card.Root data-testid="idea-card">
           <Card.Body>
             <VStack align="stretch" gap={4}>
               <HStack justify="space-between" align="start">

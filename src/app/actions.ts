@@ -160,13 +160,42 @@ export async function ensureDefaultBoard() {
 
 export async function submitVote(ideaId: string, voteType: 'up' | 'down', voterFingerprint: string) {
   console.log(`[Server] submitVote called with:`, { ideaId, voteType, voterFingerprint: voterFingerprint.substring(0, 8) + '...' });
+  
+  // Validate inputs
+  if (!ideaId || !voteType || !voterFingerprint) {
+    console.error(`[Server] Invalid inputs:`, { ideaId: !!ideaId, voteType: !!voteType, voterFingerprint: !!voterFingerprint });
+    return { success: false, error: 'Invalid inputs provided' };
+  }
+
+  if (!['up', 'down'].includes(voteType)) {
+    console.error(`[Server] Invalid vote type: ${voteType}`);
+    return { success: false, error: 'Invalid vote type' };
+  }
 
   const supabase = await createClient()
+
+  if (!supabase) {
+    console.error(`[Server] Failed to create Supabase client`);
+    return { success: false, error: 'Database connection failed' };
+  }
 
   try {
     // Convert client vote types to database vote types
     const dbVoteType = voteType === 'up' ? 'upvote' : 'downvote';
     console.log(`[Server] Converted ${voteType} to ${dbVoteType}`);
+
+    // First, verify the idea exists
+    console.log(`[Server] Verifying idea exists...`);
+    const { data: ideaExists, error: ideaError } = await supabase
+      .from('ideas')
+      .select('id')
+      .eq('id', ideaId)
+      .single();
+
+    if (ideaError || !ideaExists) {
+      console.error(`[Server] Idea not found:`, ideaError);
+      return { success: false, error: 'Idea not found' };
+    }
 
     // Check if user has already voted on this idea
     console.log(`[Server] Checking for existing vote...`);
