@@ -66,7 +66,7 @@ export function PasswordProtection({ children }: PasswordProtectionProps) {
 
   if (!isAuthenticated) {
     return (
-      <Container maxW="md" py={20}>
+      <Container maxW="md" py={20} margin="0 auto">
         <VStack gap={8} align="stretch">
           <Box textAlign="center">
             <Heading size="2xl" mb={4} color="blue.600">
