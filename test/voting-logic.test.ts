@@ -68,13 +68,13 @@ describe('Voting Functionality', () => {
       const testCases = [
         { upvotes: 5, downvotes: 2, expected: 3 },
         { upvotes: 10, downvotes: 0, expected: 10 },
-        { upvotes: 0, downvotes: 3, expected: 0 }, // Should not go below 0
-        { upvotes: 3, downvotes: 5, expected: 0 }, // Should not go below 0
+        { upvotes: 0, downvotes: 3, expected: -3 }, // Can go negative
+        { upvotes: 3, downvotes: 5, expected: -2 }, // Can go negative
         { upvotes: 0, downvotes: 0, expected: 0 },
       ]
 
       testCases.forEach(({ upvotes, downvotes, expected }) => {
-        const voteCount = Math.max(0, upvotes - downvotes)
+        const voteCount = upvotes - downvotes // Remove Math.max restriction
         expect(voteCount).toBe(expected)
       })
     })

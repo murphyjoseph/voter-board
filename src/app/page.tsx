@@ -19,7 +19,7 @@ export default async function Home() {
   const supabase = createClient()
 
   const { data: boards } = await (await supabase).from('boards').select()
-  const { data: ideas } = await (await supabase).from('ideas').select('*')
+  const { data: ideas } = await (await supabase).from('ideas').select('*').order('vote_count', { ascending: false })
 
   return <ClientHome ideas={ideas} boards={boards} />;
 }

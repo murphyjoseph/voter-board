@@ -36,7 +36,7 @@ const mockSupabaseClient = {
                   // For counting votes
                   if (field2 === 'vote_type') {
                     const votes = Array.from(mockVotes.entries())
-                      .filter(([key, voteType]) => 
+                      .filter(([key, voteType]) =>
                         key.startsWith(`${value}-`) && voteType === value2
                       )
                     return Promise.resolve({
@@ -54,7 +54,7 @@ const mockSupabaseClient = {
         insert: vi.fn((data) => {
           const record = data[0]
           const key = `${record.idea_id}-${record.voter_fingerprint}`
-          
+
           // Check for unique constraint violation
           if (mockVotes.has(key)) {
             return Promise.resolve({
@@ -62,7 +62,7 @@ const mockSupabaseClient = {
               error: { message: 'duplicate key value violates unique constraint' }
             })
           }
-          
+
           mockVotes.set(key, record.vote_type)
           return Promise.resolve({ data: [record], error: null })
         }),
@@ -82,7 +82,7 @@ const mockSupabaseClient = {
         }))
       }
     }
-    
+
     if (table === 'ideas') {
       return {
         update: vi.fn((data) => ({
@@ -93,7 +93,7 @@ const mockSupabaseClient = {
         }))
       }
     }
-    
+
     return {}
   })
 }
@@ -122,7 +122,7 @@ describe('Voting Behavior Validation', () => {
     // Test 1: User votes up for the first time
     console.log('Testing first upvote...')
     const result1 = await submitVote(ideaId, 'up', userFingerprint)
-    
+
     expect(result1.success).toBe(true)
     if (result1.success && 'data' in result1) {
       expect(result1.data.userVote).toBe('up')
@@ -132,7 +132,7 @@ describe('Voting Behavior Validation', () => {
     // Test 2: User tries to vote up again (should toggle off)
     console.log('Testing duplicate upvote (toggle off)...')
     const result2 = await submitVote(ideaId, 'up', userFingerprint)
-    
+
     expect(result2.success).toBe(true)
     if (result2.success && 'data' in result2) {
       expect(result2.data.userVote).toBe(null) // Vote removed
@@ -142,17 +142,17 @@ describe('Voting Behavior Validation', () => {
     // Test 3: User votes down
     console.log('Testing downvote...')
     const result3 = await submitVote(ideaId, 'down', userFingerprint)
-    
+
     expect(result3.success).toBe(true)
     if (result3.success && 'data' in result3) {
       expect(result3.data.userVote).toBe('down')
-      expect(result3.data.newVoteCount).toBe(0) // 0 upvotes, 1 downvote = max(0, 0-1) = 0
+      expect(result3.data.newVoteCount).toBe(-1) // 0 upvotes, 1 downvote = -1 (can go negative now)
     }
 
     // Test 4: User changes to upvote
     console.log('Testing vote change...')
     const result4 = await submitVote(ideaId, 'up', userFingerprint)
-    
+
     expect(result4.success).toBe(true)
     if (result4.success && 'data' in result4) {
       expect(result4.data.userVote).toBe('up')
@@ -183,7 +183,7 @@ describe('Voting Behavior Validation', () => {
     const result3 = await submitVote(ideaId, 'down', user1)
     expect(result3.success).toBe(true)
     if (result3.success && 'data' in result3) {
-      expect(result3.data.newVoteCount).toBe(1) // 1 up, 1 down = max(0, 1-1) = 0, but user2 still has upvote
+      expect(result3.data.newVoteCount).toBe(0) // 1 up, 1 down = 1-1 = 0
     }
 
     // User 2 removes vote
@@ -191,7 +191,7 @@ describe('Voting Behavior Validation', () => {
     expect(result4.success).toBe(true)
     if (result4.success && 'data' in result4) {
       expect(result4.data.userVote).toBe(null)
-      expect(result4.data.newVoteCount).toBe(0) // 0 up, 1 down = 0
+      expect(result4.data.newVoteCount).toBe(-1) // 0 up, 1 down = -1
     }
   })
 
