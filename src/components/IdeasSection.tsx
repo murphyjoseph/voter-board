@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { IdeaCard } from "@/components/IdeaCard";
 import { NewIdeaForm } from "@/components/NewIdeaForm";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface Idea {
   id: string;
@@ -27,10 +27,34 @@ interface Idea {
 interface IdeasSectionProps {
   ideas: Idea[] | null;
   boardId?: string;
+  autoOpenForm?: boolean;
+  onFormToggle?: (isOpen: boolean) => void;
 }
 
-export function IdeasSection({ ideas, boardId }: IdeasSectionProps) {
-  const [showForm, setShowForm] = useState(false);
+export function IdeasSection({ ideas, boardId, autoOpenForm, onFormToggle }: IdeasSectionProps) {
+  const [showForm, setShowForm] = useState(autoOpenForm || false);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  // Update form state when autoOpenForm prop changes
+  useEffect(() => {
+    if (autoOpenForm) {
+      setShowForm(true);
+      if (onFormToggle) {
+        onFormToggle(true);
+      }
+      
+      // Scroll to form after a brief delay
+      setTimeout(() => {
+        if (formRef.current) {
+          formRef.current.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start',
+            inline: 'nearest'
+          });
+        }
+      }, 600);
+    }
+  }, [autoOpenForm, onFormToggle]);
 
   const handleNewIdea = (content: string, fingerprint: string) => {
     console.log('New idea submitted:', content, 'by fingerprint:', fingerprint);
@@ -38,16 +62,27 @@ export function IdeasSection({ ideas, boardId }: IdeasSectionProps) {
 
   const handleSubmitSuccess = () => {
     setShowForm(false);
+    if (onFormToggle) {
+      onFormToggle(false);
+    }
+  };
+
+  const toggleForm = () => {
+    const newState = !showForm;
+    setShowForm(newState);
+    if (onFormToggle) {
+      onFormToggle(newState);
+    }
   };
 
   return (
-    <Box>
+    <Box ref={formRef}>
       <Flex justify="space-between" align="center" mb={4}>
         <Heading size="lg">Ideas</Heading>
         <Button
           colorScheme="blue"
           size="sm"
-          onClick={() => setShowForm(!showForm)}
+          onClick={toggleForm}
         >
           {showForm ? 'Cancel' : 'Submit New Idea'}
         </Button>

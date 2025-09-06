@@ -8,7 +8,8 @@ import {
   Badge,
   SimpleGrid,
   Container,
-  Flex
+  Flex,
+  Button
 } from "@chakra-ui/react";
 
 interface AppConcept {
@@ -17,6 +18,10 @@ interface AppConcept {
   icon: string;
   category: string;
   features: string[];
+}
+
+interface AppConceptsShowcaseProps {
+  onSubmitIdeaClick?: () => void;
 }
 
 const appConcepts: AppConcept[] = [
@@ -100,7 +105,18 @@ const getCategoryColor = (category: string) => {
   return colors[category] || 'gray';
 };
 
-export function AppConceptsShowcase() {
+export function AppConceptsShowcase({ onSubmitIdeaClick }: AppConceptsShowcaseProps) {
+  const handleSubmitClick = () => {
+    // Scroll to top of page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Call the callback to open the form
+    if (onSubmitIdeaClick) {
+      setTimeout(() => {
+        onSubmitIdeaClick();
+      }, 500); // Delay to let scroll animation complete
+    }
+  };
   return (
     <Container maxW="container.xl" py={8}>
       <VStack gap={8} align="stretch">
@@ -243,22 +259,28 @@ export function AppConceptsShowcase() {
             <Heading size="lg" color="blue.700" mb={2}>
               Got Your Own Creative App Idea?
             </Heading>
-            <Text color="blue.600" fontSize="lg" maxW="lg" mx="auto">
+            <Text color="blue.600" fontSize="lg" maxW="lg" mx="auto" mb={4}>
               Share your concept for reimagining everyday tools and help inspire the next generation of creative apps
             </Text>
-            <Badge
+            <Button
               colorScheme="blue"
               variant="solid"
-              px={6}
-              py={2}
+              size="lg"
+              px={8}
+              py={3}
               borderRadius="full"
-              fontSize="sm"
+              fontSize="md"
+              fontWeight="bold"
               cursor="pointer"
-              _hover={{ transform: "scale(1.05)" }}
-              transition="transform 0.2s"
+              _hover={{ 
+                transform: "scale(1.05)",
+                shadow: "lg"
+              }}
+              transition="all 0.2s"
+              onClick={handleSubmitClick}
             >
-              💭 Submit Your Idea Below
-            </Badge>
+              Submit your idea now
+            </Button>
           </VStack>
         </Box>
       </VStack>
