@@ -30,7 +30,7 @@ const appConcepts: AppConcept[] = [
   {
     title: "Quest-Based To-Do List",
     description: "Tasks show up as quests in a game world, with rewards for completing them.",
-    icon: "⚔️", 
+    icon: "⚔️",
     category: "Gamification",
     features: ["Quest System", "Rewards & XP", "Game World"]
   },
@@ -89,7 +89,7 @@ const getCategoryColor = (category: string) => {
   const colors: Record<string, string> = {
     'Productivity': 'blue',
     'Gamification': 'purple',
-    'Weather': 'cyan', 
+    'Weather': 'cyan',
     'Cooking': 'orange',
     'Lifestyle': 'green',
     'Education': 'teal',
@@ -181,9 +181,9 @@ export function AppConceptsShowcase() {
 
                   {/* Features */}
                   <VStack align="start" gap={2} w="full">
-                    <Text 
-                      fontSize="xs" 
-                      fontWeight="bold" 
+                    <Text
+                      fontSize="xs"
+                      fontWeight="bold"
                       color={`${categoryColor}.600`}
                       textTransform="uppercase"
                       letterSpacing="wide"

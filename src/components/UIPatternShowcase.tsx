@@ -29,7 +29,7 @@ interface UIPattern {
 // Example Quest Component for the Quest-Based To-Do
 function QuestComponent() {
   const [progress, setProgress] = useState(65);
-  
+
   return (
     <Card.Root bg="purple.50" borderColor="purple.200" borderWidth="2px">
       <Card.Body p={4}>
@@ -40,10 +40,10 @@ function QuestComponent() {
             <Badge colorScheme="purple" variant="subtle" size="sm">Epic Quest</Badge>
           </HStack>
           <Box w="full" bg="purple.100" borderRadius="full" h="8px">
-            <Box 
-              bg="purple.500" 
-              h="full" 
-              borderRadius="full" 
+            <Box
+              bg="purple.500"
+              h="full"
+              borderRadius="full"
               w={`${progress}%`}
               transition="width 0.3s"
             />
@@ -61,13 +61,13 @@ function QuestComponent() {
 // Mood Weather Component
 function MoodWeatherComponent() {
   const [mood, setMood] = useState("happy");
-  
+
   const weatherMoods = {
     happy: { emoji: "☀️", bg: "yellow.100", text: "Sunny & Bright" },
     calm: { emoji: "🌤️", bg: "blue.100", text: "Partly Cloudy" },
     dramatic: { emoji: "⛈️", bg: "gray.200", text: "Thunderstorms" }
   };
-  
+
   return (
     <Card.Root bg={weatherMoods[mood as keyof typeof weatherMoods].bg}>
       <Card.Body p={4} textAlign="center">
@@ -95,7 +95,7 @@ function MoodWeatherComponent() {
 // Plant Personality Component
 function PlantPersonalityComponent() {
   const { open, onToggle } = useDisclosure();
-  
+
   return (
     <Card.Root bg="green.50" borderColor="green.200" borderWidth="2px">
       <Card.Body p={4}>
@@ -114,11 +114,11 @@ function PlantPersonalityComponent() {
               {open ? "−" : "+"}
             </IconButton>
           </HStack>
-          
+
           <Text fontSize="xs" color="green.600">
             "Feeling thirsty today! 💧"
           </Text>
-          
+
           {open && (
             <VStack align="start" gap={2} pt={2}>
               <HStack>
@@ -143,36 +143,36 @@ function PlantPersonalityComponent() {
 // Habit Constellation Component
 function HabitConstellationComponent() {
   const [brightness, setBrightness] = useState(75);
-  
+
   return (
     <Card.Root bg="gray.900" color="white">
       <Card.Body p={4} textAlign="center">
         <VStack gap={3}>
           <Text fontSize="lg" fontWeight="bold">Morning Routine</Text>
           <Box position="relative" h="60px" w="full">
-            <Text 
-              fontSize="2xl" 
-              position="absolute" 
-              top="10px" 
-              left="20%" 
+            <Text
+              fontSize="2xl"
+              position="absolute"
+              top="10px"
+              left="20%"
               opacity={brightness / 100}
             >
               ⭐
             </Text>
-            <Text 
-              fontSize="xl" 
-              position="absolute" 
-              top="5px" 
-              right="30%" 
+            <Text
+              fontSize="xl"
+              position="absolute"
+              top="5px"
+              right="30%"
               opacity={brightness / 100}
             >
               ✨
             </Text>
-            <Text 
-              fontSize="lg" 
-              position="absolute" 
-              bottom="10px" 
-              left="50%" 
+            <Text
+              fontSize="lg"
+              position="absolute"
+              bottom="10px"
+              left="50%"
               opacity={brightness / 100}
             >
               ⭐
@@ -181,9 +181,9 @@ function HabitConstellationComponent() {
           <Text fontSize="xs" color="gray.300">
             {brightness}% Constellation Brightness
           </Text>
-          <Button 
-            size="xs" 
-            colorScheme="yellow" 
+          <Button
+            size="xs"
+            colorScheme="yellow"
             variant="solid"
             onClick={() => setBrightness(Math.min(100, brightness + 10))}
           >
@@ -206,7 +206,7 @@ export function UIPatternShowcase() {
     {
       title: "Emotional Interface",
       description: "Use mood and emotion to drive visual changes and interactions",
-      type: "Emotional Design", 
+      type: "Emotional Design",
       component: <MoodWeatherComponent />
     },
     {
@@ -216,7 +216,7 @@ export function UIPatternShowcase() {
       component: <PlantPersonalityComponent />
     },
     {
-      title: "Spatial Metaphors", 
+      title: "Spatial Metaphors",
       description: "Use space and visual metaphors to represent abstract concepts",
       type: "Spatial Design",
       component: <HabitConstellationComponent />
@@ -253,7 +253,7 @@ export function UIPatternShowcase() {
                   {pattern.description}
                 </Text>
               </Box>
-              
+
               {/* Interactive Component */}
               <Box>
                 {pattern.component}
