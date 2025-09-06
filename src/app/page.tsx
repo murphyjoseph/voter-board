@@ -7,62 +7,42 @@ import {
   HStack,
   Container,
   Card,
-  SimpleGrid
+  SimpleGrid,
+  Flex
 } from "@chakra-ui/react";
 import { VoterCard } from "@/components/VoterCard";
+import { IdeaCard } from "@/components/IdeaCard";
+import { NewIdeaForm } from "@/components/NewIdeaForm";
+import { IdeasSection } from "@/components/IdeasSection";
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 
 export default async function Home() {
 
-  const cookieStore = await cookies()
-  const supabase = createClient(cookieStore)
+  const supabase = createClient(cookies())
 
-  const { data: todos } = await supabase.from('todos').select()
+  const { data: boards } = await supabase.from('boards').select()
+  const { data: ideas } = await supabase.from('ideas').select('*')
 
   return (
     <Container maxW="container.xl" py={8}>
       <VStack gap={8} align="stretch">
         <Box textAlign="center">
           <Heading size="2xl" mb={4}>
-            Welcome to Voter Board
+            Welcome to Hackreation Voter Board
           </Heading>
-          <Text fontSize="lg" color="gray.600">
-            Built with Next.js and Chakra UI
-          </Text>
-        </Box>
-
-        <Card.Root>
-          <Card.Body>
-            <VStack gap={4}>
-              <Heading size="lg">Getting Started</Heading>
-              <Text>
-                Get started by editing <code>src/app/page.tsx</code>.
-                Save and see your changes instantly.
-              </Text>
-
-              <HStack gap={4}>
-                <Button colorScheme="blue" size="lg">
-                  Deploy now
-                </Button>
-                <Button variant="outline" size="lg">
-                  Read our docs
-                </Button>
-              </HStack>
-            </VStack>
-          </Card.Body>
-        </Card.Root>
-
-        <Box>
-          <Heading size="lg" mb={4}>
-            Sample Voter Board Components
-          </Heading>
-          <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={6}>
-            <VoterCard />
-            <VoterCard />
-            <VoterCard />
+          <SimpleGrid columns={1} gap={6}>
+            {boards?.map((board) => (
+              <Box key={board.id} p={4} borderWidth="1px" borderRadius="md" boxShadow="sm">
+                <Heading size="md">{board.title}</Heading>
+                <Text>{board.description}</Text>
+              </Box>
+            ))}
           </SimpleGrid>
         </Box>
+
+        {/* Ideas Section */}
+        <IdeasSection ideas={ideas} />
       </VStack>
     </Container>
   );
