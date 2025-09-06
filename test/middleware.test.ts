@@ -52,7 +52,7 @@ describe('Middleware Functionality', () => {
         const isAllowed = pathname === '/maintenance' ||
                          pathname.startsWith('/_next/') ||
                          pathname.startsWith('/favicon.ico') ||
-                         pathname.match(/\.(svg|png|jpg|jpeg|gif|webp)$/)
+                         !!pathname.match(/\.(svg|png|jpg|jpeg|gif|webp)$/)
 
         expect(isAllowed).toBe(true)
       })
@@ -71,7 +71,7 @@ describe('Middleware Functionality', () => {
         const isAllowed = pathname === '/maintenance' ||
                          pathname.startsWith('/_next/') ||
                          pathname.startsWith('/favicon.ico') ||
-                         pathname.match(/\.(svg|png|jpg|jpeg|gif|webp)$/)
+                         !!pathname.match(/\.(svg|png|jpg|jpeg|gif|webp)$/)
 
         expect(isAllowed).toBe(false)
       })

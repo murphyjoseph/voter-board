@@ -60,9 +60,9 @@ describe('Server Actions', () => {
 
       // Validation logic
       const validateInputs = (inputs: any) => {
-        return inputs.ideaId &&
+        return !!(inputs.ideaId &&
                ['up', 'down'].includes(inputs.voteType) &&
-               inputs.voterFingerprint
+               inputs.voterFingerprint)
       }
 
       expect(validateInputs(validInputs)).toBe(true)

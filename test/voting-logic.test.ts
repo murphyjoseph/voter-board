@@ -141,7 +141,7 @@ describe('Voting Functionality', () => {
 
       // Valid params should pass validation
       const isValidParams = (params: any) =>
-        params.ideaId && params.voteType && params.voterFingerprint
+        !!(params.ideaId && params.voteType && params.voterFingerprint)
 
       expect(isValidParams(validParams)).toBe(true)
 
