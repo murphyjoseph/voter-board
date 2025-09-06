@@ -10,8 +10,16 @@ import {
   SimpleGrid
 } from "@chakra-ui/react";
 import { VoterCard } from "@/components/VoterCard";
+import { createClient } from '@/utils/supabase/server'
+import { cookies } from 'next/headers'
 
-export default function Home() {
+export default async function Home() {
+
+  const cookieStore = await cookies()
+  const supabase = createClient(cookieStore)
+
+  const { data: todos } = await supabase.from('todos').select()
+
   return (
     <Container maxW="container.xl" py={8}>
       <VStack gap={8} align="stretch">
